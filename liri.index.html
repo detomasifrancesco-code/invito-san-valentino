@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Liri ❤️</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffb6c1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .bg-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: -1; overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute; bottom: -30px;
+            animation: floatUp linear infinite; opacity: 0.9;
+        }
+        
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        h1 {
+            color: #d32f2f; font-size: 2rem; margin-bottom: 15px;
+            padding: 0 20px; line-height: 1.3;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.7);
+        }
+
+        p { color: #d32f2f; font-size: 1.1rem; font-weight: bold; margin-top: 10px; padding: 0 20px; }
+        
+        img {
+            max-width: 250px; width: 75%; border-radius: 20px;
+            margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .buttons {
+            display: flex; gap: 15px; justify-content: center;
+            align-items: center; flex-wrap: wrap; z-index: 10; margin-top: 15px;
+        }
+        
+        button {
+            padding: 15px 30px; font-size: 1.1rem; border: none;
+            border-radius: 50px; cursor: pointer; transition: all 0.3s ease;
+            font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        #yesBtn { background-color: #4CAF50; color: white; }
+        #noBtn { background-color: #f44336; color: white; }
+        .opt-btn { background-color: #ffffff; color: #d32f2f; border: 2px solid #d32f2f; min-width: 100px;}
+        .next-btn { background-color: #ff69b4; color: white; }
+
+        /* Timer Styles */
+        #timer, #intro-timer {
+            font-size: 0.9rem;
+            color: #b71c1c;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .volume-note {
+            font-size: 0.8rem;
+            color: #d32f2f;
+            position: absolute;
+            bottom: 30px;
+            opacity: 0.8;
+            width: 100%;
+        }
+
+        .ps-message {
+            font-size: 0.9rem; 
+            color: #b71c1c; 
+            margin-top: 20px; 
+            background-color: rgba(255,255,255,0.5); 
+            padding: 10px; 
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        /* Gestione Schermate */
+        #question-screen, #celebration, #options-screen, #final-message { display: none; }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="bg-container" id="bgContainer"></div>
+
+    <div id="intro-screen">
+        <img src="https://i.pinimg.com/736x/74/55/1e/74551e24dfafb6b473cb8223b93e9327.jpg" alt="Bom dia">
+        <h1>Bom dia, meu amor. ❤️💖</h1>
+        <div id="intro-timer">Carregando surpresa em <span id="start-seconds">4</span>s...</div>
+    </div>
+
+    <div id="question-screen">
+        <img src="https://i.pinimg.com/originals/04/34/b4/0434b4740ae50bf12654f565bf4b8b3a.gif" alt="Gatinhos fofos">
+        <h1>Quer ser a minha Valentine? ❤️</h1>
+        <div class="buttons">
+            <button id="yesBtn" onclick="showCelebration()">Sim! 😍</button>
+            <button id="noBtn" onclick="deny()">Não</button>
+        </div>
+        <p class="volume-note">Coloque o volume em média potência 🔊</p>
+    </div>
+
+    <div id="celebration">
+        <img src="https://i.pinimg.com/originals/de/f1/77/def177caecd0495c1fd536d9e6817f3a.gif" alt="Muito feliz">
+        <h1>Uhuuul! Sabia que você diria SIM! 💖</h1>
+        <button class="next-btn" onclick="showOptions()">Clique para uma surpresa! ✨</button>
+    </div>
+
+    <div id="options-screen">
+        <img src="https://i.pinimg.com/736x/b7/e1/62/b7e16255d4cfc9437c288059f7e6b672.jpg" alt="Gatinho com coração">
+        <h1>Escolha uma opção para sábado...</h1>
+        <p>(Você solo saberá o que é no dia! 😉)</p>
+        <div class="buttons">
+            <button class="opt-btn" onclick="showFinal('A')">Opção A</button>
+            <button class="opt-btn" onclick="showFinal('B')">Opção B</button>
+            <button class="opt-btn" onclick="showFinal('C')">Opção C</button>
+        </div>
+    </div>
+
+    <div id="final-message">
+        <img src="https://i.pinimg.com/originals/d8/2b/2a/d82b2a27b5869888c255eb2f7c101216.gif" alt="Abraço apertado">
+        <h1>Ótima escolha! 😍</h1>
+        <p>Nos vemos sábado à noite depois da aula de piano 😉</p>
+        <div id="timer">Te levando para o WhatsApp em <span id="seconds">5</span>s...</div>
+        <p class="ps-message">PS: me diz que horas você tem a aula de piano! 🎹</p>
+    </div>
+
+    <script>
+        // --- CONFIGURAÇÃO ---
+        const meuNumero = "393280910545"; // Metti il tuo numero qui
+        // ----------------------
+
+        // Timer per la schermata iniziale (4 secondi)
+        window.onload = function() {
+            let startLeft = 4;
+            const startTimerDisplay = document.getElementById('start-seconds');
+            
+            const startCountdown = setInterval(() => {
+                startLeft--;
+                if(startTimerDisplay) startTimerDisplay.innerText = startLeft;
+                if(startLeft <= 0) clearInterval(startCountdown);
+            }, 1000);
+
+            setTimeout(function() {
+                document.getElementById('intro-screen').style.display = 'none';
+                document.getElementById('question-screen').style.display = 'block';
+            }, 4000);
+        };
+
+        let scale = 1; 
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const bgMusic = document.getElementById('bgMusic');
+        const texts = ["Tem certeza?", "Sério?", "Pense bem...", "🥺", "💔"];
+        let textIndex = 0;
+
+        function deny() {
+            scale += 0.5; 
+            yesBtn.style.transform = `scale(${scale})`;
+            noBtn.innerText = texts[textIndex];
+            textIndex = (textIndex + 1) % texts.length;
+        }
+
+        function showCelebration() {
+            // Imposta volume a 0.5 (potenza media)
+            bgMusic.volume = 0.5;
+            bgMusic.play().catch(e => console.log("Audio waiting"));
+            
+            document.getElementById('question-screen').style.display = 'none';
+            document.getElementById('celebration').style.display = 'block';
+            createFloatingElements(40);
+        }
+
+        function showOptions() {
+            document.getElementById('celebration').style.display = 'none';
+            document.getElementById('options-screen').style.display = 'block';
+        }
+
+        function showFinal(escolha) { 
+            document.getElementById('options-screen').style.display = 'none';
+            document.getElementById('final-message').style.display = 'block';
+            createFloatingElements(60);
+
+            let timeLeft = 5;
+            const timerDisplay = document.getElementById('seconds');
+            const countdown = setInterval(() => {
+                timeLeft--;
+                timerDisplay.innerText = timeLeft;
+                if(timeLeft <= 0) clearInterval(countdown);
+            }, 1000);
+
+            // Messaggio in ITALIANO
+            const testoMessaggio = "Ho scelto l'Opzione " + escolha + "! Non vedo l'ora che sia sabato <3<3";
+            const messaggioURL = encodeURIComponent(testoMessaggio);
+            
+            setTimeout(() => {
+                if(meuNumero !== "393XXXXXXXXX") {
+                    window.location.href = "https://wa.me/" + meuNumero + "?text=" + messaggioURL;
+                } else {
+                    alert("Configure o número no código!");
+                }
+            }, 5000);
+        }
+
+        function createFloatingElements(num) {
+            const container = document.getElementById('bgContainer');
+            const options = ['❤️', '💖', '🌸', '🌹', '🌷', '✨'];
+            for (let i = 0; i < num; i++) {
+                let element = document.createElement('div');
+                element.className = 'floating-element';
+                element.innerHTML = options[Math.floor(Math.random() * options.length)];
+                element.style.left = Math.random() * 100 + 'vw';
+                element.style.animationDuration = (Math.random() * 5 + 3) + 's';
+                element.style.fontSize = (Math.random() * 25 + 15) + 'px';
+                element.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(element);
+            }
+        }
+        createFloatingElements(25);
+    </script>
+</body>
+</html>
